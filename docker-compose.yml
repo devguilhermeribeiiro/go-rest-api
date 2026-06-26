@@ -1,7 +1,7 @@
 services:
   go-app:
     container_name: go-app
-    image: go-rest-api
+    image: go-rest-api-optimized
     build: .
     ports: 
       - "8080:8080"
