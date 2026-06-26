@@ -1,11 +1,16 @@
-FROM golang:1.26
+FROM golang:1.26-alpine AS stage1
 
-WORKDIR /go/src/app
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
 
-EXPOSE 8080
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/main.go
 
-RUN go build -o main cmd/main.go
+FROM scratch
 
-CMD ["./main"]
+COPY --from=stage1 /app/server /
+
+ENTRYPOINT ["/server"]
